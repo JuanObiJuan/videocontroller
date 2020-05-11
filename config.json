@@ -1,0 +1,10 @@
+{
+  "version": 202005111739,
+  "mainVideo": "mainvideo.mp4",
+  "mainVideoUrl": "",
+  "introVideo": "introvideo.mp4",
+  "introVideoUrl": "",
+  "distance": 1500,
+  "loopMainVideoWhileUserInFront": true,
+  "mainVideoTimer": -1
+}
