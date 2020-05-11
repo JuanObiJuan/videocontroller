@@ -19,7 +19,10 @@ tof.start_ranging(3)  # Start ranging
                       # 1 = Short Range
                       # 2 = Medium Range
                       # 3 = Long Range
-led = LED(4)
+
+#Now we have two channels to communicate with the lights
+relay1=LED(27)
+relay2=LED(17)
 
 def exit_handler(signal, frame):
     global running
@@ -70,14 +73,26 @@ class Player(QtWidgets.QMainWindow):
         self.mediaplayer.play()
         self.timer.start()
 
+    # maybe this change in the future
+    # and instead on/off we have to temporally
+    # make a pulse (temporally on)
+
+    def setRelaisIntroVideo():
+        relay1.on();
+        relay2.off();
+
+    def setRelaisMainVideo():
+        relay2.on();
+        relay1.off();
+
     def callback(self):
         self.timer.stop()
 
         # if the video has ended start the intro-video.
         if(self.mediaplayer.get_state() == 6):
             if(not self.waiting):
-                led.toggle() # set relais 2 for light situation for the intro video
-
+                # set relais for light situation for the intro video
+                self.setRelaisIntroVideo()
             self.set_video(self.waitVideo)
             self.waiting = True
 
@@ -85,7 +100,8 @@ class Player(QtWidgets.QMainWindow):
         if(self.waiting):
             distance_in_mm = tof.get_distance()
             if (distance_in_mm < startingDistance and distance_in_mm > -1):
-                led.toggle() # set relais 1 for light situation for the Main video
+                # set relais for light situation for the Main video
+                self.setRelaisMainVideo()
                 self.set_video(self.video)
                 self.waiting = False
 
