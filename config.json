@@ -1,5 +1,6 @@
 {
   "version": 202005111739,
+  "updateConfigUrl": "http",
   "mainVideo": "mainvideo.mp4",
   "mainVideoUrl": "",
   "introVideo": "introvideo.mp4",
