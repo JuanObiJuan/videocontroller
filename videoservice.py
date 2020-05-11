@@ -26,5 +26,5 @@ if(remoteConfig["version"]>localConfig["version"]):
   #delete the old ones
   #update the local config file
   #run mus.py
-else
+else:
   #run mus.py
