@@ -7,7 +7,7 @@ import vlc
 from gpiozero import LED
 import VL53L1X
 
-startingDistance = 1000
+startingDistance = 1500
 introVideo = "/home/pi/videointro.mp4"
 mainVideo = "/home/pi/t.mp4"
 
@@ -77,13 +77,13 @@ class Player(QtWidgets.QMainWindow):
     # and instead on/off we have to temporally
     # make a pulse (temporally on)
 
-    def setRelaisIntroVideo():
-        relay1.on();
-        relay2.off();
+    def setRelaisIntroVideo(self):
+        relay1.on()
+        relay2.off()
 
-    def setRelaisMainVideo():
-        relay2.on();
-        relay1.off();
+    def setRelaisMainVideo(self):
+        relay2.on()
+        relay1.off()
 
     def callback(self):
         self.timer.stop()
