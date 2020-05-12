@@ -7,9 +7,10 @@ import vlc
 from gpiozero import LED
 import VL53L1X
 
+minDistance = 10 # distance smaller than this will be ignored
 startingDistance = 1500
 introVideo = "/home/pi/videointro.mp4"
-mainVideo = "/home/pi/t.mp4"
+mainVideo = "/home/pi/mainvideo.mp4"
 
 # Open and start the VL53L1X sensor.
 tof = VL53L1X.VL53L1X(i2c_bus=1, i2c_address=0x29)
@@ -97,7 +98,7 @@ class Player(QtWidgets.QMainWindow):
         # start video if distance is lower than startingDistance
         if(self.waiting):
             distance_in_mm = tof.get_distance()
-            if (distance_in_mm < startingDistance and distance_in_mm > -1):
+            if (distance_in_mm < startingDistance and distance_in_mm > minDistance):
                 # set relais for light situation for the Main video
                 self.setRelaisMainVideo()
                 self.set_video(self.video)
@@ -118,4 +119,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
