@@ -17,9 +17,12 @@ localConfigFile = "/home/pi/config.json"
 with open(localConfigFile) as json_file:
     localConfig = json.load(json_file)
 
-#TODO take care of no internet connection
-json_url_content= urllib.request.urlopen(localConfig["updateConfigUrl"])
-remoteConfig = json.load(json_url_content)
+# if the url can't be opened set "remoteConfig = localConfig"
+try:
+    json_url_content= urllib.request.urlopen(localConfig["updateConfigUrl"])
+    remoteConfig = json.load(json_url_content)
+except:
+    remoteConfig = localConfig
 
 if(remoteConfig["version"]>localConfig["version"]):
   print("update videos and run mus.py")
