@@ -12,8 +12,9 @@ import urllib.request
   #"mainVideoTimer": -1
 
 
+localConfigFile = "/home/pi/config.json"
 
-with open('/home/pi/config.json') as json_file:
+with open(localConfigFile) as json_file:
     localConfig = json.load(json_file)
 
 #TODO take care of no internet connection
@@ -22,9 +23,10 @@ remoteConfig = json.load(json_url_content)
 
 if(remoteConfig["version"]>localConfig["version"]):
   print("update videos and run mus.py")
-  #download new videos
-  #delete the old ones
+  #download new videos and overwrite old ones
+  urllib.request.urlretrieve(remoteConfig["introVideoUrl"],r"/home/pi/introvideo.mp4")
+  urllib.request.urlretrieve(remoteConfig["mainVideoUrl"],r"/home/pi/mainvideo.mp4")
   #update the local config file
-  #run mus.py
-else:
-  #run mus.py
+  json.dump(remoteConfig ,open(localConfigFile,"w"),indent=2)
+
+#run mus.py
