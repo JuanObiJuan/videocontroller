@@ -1,5 +1,5 @@
 import json
-import urllib
+import urllib.request
 #The json format
   #"version": 202005111739,
   #"updateConfigUrl": "https://mydomain/config.json",
@@ -17,7 +17,7 @@ with open('/home/pi/config.json') as json_file:
     localConfig = json.load(json_file)
 
 #TODO take care of no internet connection
-json_url_content= urllib.urlopen(localConfig["updateConfigUrl"])
+json_url_content= urllib.request.urlopen(localConfig["updateConfigUrl"])
 remoteConfig = json.load(json_url_content)
 
 if(remoteConfig["version"]>localConfig["version"]):
