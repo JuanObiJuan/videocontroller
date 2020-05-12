@@ -66,7 +66,7 @@ class Player(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.callback)
         self.timer.start()
 
-    def set_video(self, video)
+    def set_video(self, video):
         self.mediaplayer.set_media(video)
         self.mediaplayer.set_xwindow(int(self.videoframe.winId()))
         self.mediaplayer.play()
