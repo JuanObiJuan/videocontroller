@@ -45,6 +45,6 @@ if(remoteConfig["version"]>localConfig["version"]):
     os.rename("/home/pi/mainvideo_new.mp4","/home/pi/mainvideo.mp4")
     #update the local config file
     json.dump(remoteConfig ,open(localConfigFile,"w"),indent=2)
-else:
-  os.system('notify-send "loading" "Loading player"')
-  os.system('python3 /home/pi/Repository/videocontroller/mus.py')
+
+os.system('notify-send "loading" "Loading player"')
+os.system('python3 /home/pi/Repository/videocontroller/mus.py')
