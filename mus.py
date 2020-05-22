@@ -29,19 +29,12 @@ with open(localConfigFile) as json_file:
     localConfig = json.load(json_file)
     print("local config loaded")
 
-
 minDistance = 10 # distance smaller than this will be ignored
 startingDistance = localConfig["distance"]
-localConfig = json.load(json_file)
 loopMainVideo = localConfig["loopMainVideoWhileUserInFront"]
 mainVideoTimerSec = localConfig["mainVideoTimer"]
 introVideo = "/home/pi/introvideo.mp4"
 mainVideo = "/home/pi/mainvideo.mp4"
-
-with open("/home/pi/config.json") as json_file:
-    localConfig = json.load(json_file)
-    loopMainVideo = localConfig["loopMainVideoWhileUserInFront"]
-    mainVideoTimerSec = localConfig["mainVideoTimer"]
 
 breakMainVideo = (mainVideoTimerSec > -1)
 
