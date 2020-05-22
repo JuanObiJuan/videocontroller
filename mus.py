@@ -21,8 +21,6 @@ import json
   #"loopMainVideoWhileUserInFront": true,
   #"mainVideoTimer": -1
 
-
-
 localConfigFile = "/home/pi/Repository/videocontroller/config.json"
 
 with open(localConfigFile) as json_file:
@@ -86,6 +84,7 @@ class Player(QtWidgets.QMainWindow):
         self.mediaplayer = self.instance.media_player_new()
         self.waitVideo = self.instance.media_new(introVideo)
         self.video = self.instance.media_new(mainVideo)
+        self.mediaplayer.set_xwindow(int(self.videoframe.winId()))
         self.waiting = True
 
         # set timer for callback
@@ -95,9 +94,10 @@ class Player(QtWidgets.QMainWindow):
         self.timer.start()
 
     def set_video(self, video):
+        self.timer.stop()
         self.mediaplayer.set_media(video)
-        self.mediaplayer.set_xwindow(int(self.videoframe.winId()))
         self.mediaplayer.play()
+        self.timer.start()
 
     def keyPressEvent(self,event):
         if(event.key() == QtCore.Qt.Key_Escape):
