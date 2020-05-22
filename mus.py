@@ -49,6 +49,7 @@ class Player(QtWidgets.QMainWindow):
 
         # setup qt window
         QtWidgets.QMainWindow.__init__(self, master)
+        QtWidgets.QApplication.setOverrideCursor(QtCore.Qt.BlankCursor)
         self.widget = QtWidgets.QWidget(self)
         self.setCentralWidget(self.widget)
         self.videoframe = QtWidgets.QFrame()
