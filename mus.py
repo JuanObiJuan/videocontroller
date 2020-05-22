@@ -126,7 +126,7 @@ class Player(QtWidgets.QMainWindow):
             time.sleep(relayPulseTime)
             relay2.off()
         else:
-        relay1.off()
+            relay1.off()
         self.waiting = False
 
         #TODO: would be much more elegant with two different callback functions for the waiting states
