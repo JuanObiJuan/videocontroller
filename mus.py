@@ -8,16 +8,40 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 import vlc
 from gpiozero import LED
 import VL53L1X
+import json
+
+#The json format
+  #"version": 202005111739,
+  #"updateConfigUrl": "https://mydomain/config.json",
+  #"mainVideo": "mainvideo.mp4",
+  #"mainVideoUrl": "",
+  #"introVideo": "introvideo.mp4",
+  #"introVideoUrl": "",
+  #"distance": 1500,
+  #"loopMainVideoWhileUserInFront": true,
+  #"mainVideoTimer": -1
+
+
+
+localConfigFile = "/home/pi/Repository/videocontroller/config.json"
+
+with open(localConfigFile) as json_file:
+    localConfig = json.load(json_file)
+    print("local config loaded")
+
 
 minDistance = 10 # distance smaller than this will be ignored
-introVideo = "/home/pi/videointro.mp4"
+startingDistance = localConfig["distance"]
+localConfig = json.load(json_file)
+loopMainVideo = localConfig["loopMainVideoWhileUserInFront"]
+mainVideoTimerSec = localConfig["mainVideoTimer"]
+introVideo = "/home/pi/introvideo.mp4"
 mainVideo = "/home/pi/mainvideo.mp4"
 
 with open("/home/pi/config.json") as json_file:
     localConfig = json.load(json_file)
     loopMainVideo = localConfig["loopMainVideoWhileUserInFront"]
     mainVideoTimerSec = localConfig["mainVideoTimer"]
-    startingDistance = localConfig["distance"]
 
 breakMainVideo = (mainVideoTimerSec > -1)
 
