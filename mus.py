@@ -99,6 +99,11 @@ class Player(QtWidgets.QMainWindow):
         self.mediaplayer.set_xwindow(int(self.videoframe.winId()))
         self.mediaplayer.play()
 
+    def keyPressEvent(self,event):
+        if(event.key() == QtCore.Qt.Key_Escape):
+            tof.stop_ranging()
+            self.close()
+
     # maybe this change in the future
     # and instead on/off we have to temporally
     # make a pulse (temporally on)
@@ -109,7 +114,6 @@ class Player(QtWidgets.QMainWindow):
         self.waiting = True
 
     def setRelaisMainVideo(self):
-        relay1.on()
         relay2.on()
         relay1.off()
         self.waiting = False
