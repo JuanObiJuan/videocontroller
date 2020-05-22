@@ -10,7 +10,6 @@ from gpiozero import LED
 import VL53L1X
 
 minDistance = 10 # distance smaller than this will be ignored
-startingDistance = 1500
 introVideo = "/home/pi/videointro.mp4"
 mainVideo = "/home/pi/mainvideo.mp4"
 
@@ -18,6 +17,7 @@ with open("/home/pi/config.json") as json_file:
     localConfig = json.load(json_file)
     loopMainVideo = localConfig["loopMainVideoWhileUserInFront"]
     mainVideoTimerSec = localConfig["mainVideoTimer"]
+    startingDistance = localConfig["distance"]
 
 breakMainVideo = (mainVideoTimerSec > -1)
 
