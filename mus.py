@@ -1,7 +1,9 @@
 import platform
 import os
 import sys
+import time
 import signal
+import json
 from PyQt5 import QtWidgets, QtGui, QtCore
 import vlc
 from gpiozero import LED
@@ -11,6 +13,13 @@ minDistance = 10 # distance smaller than this will be ignored
 startingDistance = 1500
 introVideo = "/home/pi/videointro.mp4"
 mainVideo = "/home/pi/mainvideo.mp4"
+
+with open("/home/pi/config.json") as json_file:
+    localConfig = json.load(json_file)
+    loopMainVideo = localConfig["loopMainVideoWhileUserInFront"]
+    mainVideoTimerSec = localConfig["mainVideoTimer"]
+
+breakMainVideo = (mainVideoTimerSec > -1)
 
 # Open and start the VL53L1X sensor.
 tof = VL53L1X.VL53L1X(i2c_bus=1, i2c_address=0x29)
@@ -79,32 +88,45 @@ class Player(QtWidgets.QMainWindow):
     def setRelaisIntroVideo(self):
         relay1.on()
         relay2.off()
+        self.waiting = True
 
     def setRelaisMainVideo(self):
+        relay1.on()
         relay2.on()
         relay1.off()
+        self.waiting = False
 
+        #TODO: would be much more elegant with two different callback functions for the waiting states
     def callback(self):
-        self.timer.stop()
+        videoEnded = (self.mediaplayer.get_state() == 6)
+        distance_in_mm = tof.get_distance()
+        userPresent = (distance_in_mm < startingDistance and distance_in_mm > minDistance)
+        #TODO: this way a distance smaller than startingDistance is treated like no user is Present, this might not be a problem though.
+        #      but it feels like it would be more logical if it's handled as the state of last call.
+        #      or maybe test again??
+        if(userPresent):
+            self.lastTimeUserPresent = time.time()
 
-        # if the video has ended start the intro-video.
-        if(self.mediaplayer.get_state() == 6):
-            if(not self.waiting):
-                # set relais for light situation for the intro video
-                self.setRelaisIntroVideo()
-            self.set_video(self.waitVideo)
-            self.waiting = True
+        if(videoEnded):
+            if(userPresent):
+                self.set_video(self.video)
+                if(self.waiting):
+                    self.setRelaisMainVideo()
+            else:
+                self.set_video(self.waitVideo)
+                if(not self.waiting):
+                    self.setRelaisIntroVideo()
+            return
 
-        # start video if distance is lower than startingDistance
         if(self.waiting):
-            distance_in_mm = tof.get_distance()
-            if (distance_in_mm < startingDistance and distance_in_mm > minDistance):
-                # set relais for light situation for the Main video
+            if(userPresent):
                 self.setRelaisMainVideo()
                 self.set_video(self.video)
-                self.waiting = False
-
-        self.timer.start()
+        elif(not userPresent and breakMainVideo):
+            timeWithoutUser = time.time() - self.lastTimeUserPresent
+            if(timeWithoutUser > mainVideoTimerSec):
+                self.setRelaisIntroVideo()
+                self.set_video(self.waitVideo)
 
 def main():
     app = QtWidgets.QApplication(sys.argv)

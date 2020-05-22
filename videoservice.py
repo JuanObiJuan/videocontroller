@@ -12,7 +12,6 @@ import urllib.request
   #"mainVideoTimer": -1
 
 
-
 localConfigFile = "/home/pi/config.json"
 
 
@@ -41,4 +40,5 @@ if(remoteConfig["version"]>localConfig["version"]):
     #update the local config file
     json.dump(remoteConfig ,open(localConfigFile,"w"),indent=2)
 
-#run mus.py
+import mus
+mus.main()
