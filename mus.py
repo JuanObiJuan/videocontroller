@@ -36,6 +36,9 @@ mainVideo = "/home/pi/mainvideo.mp4"
 
 breakMainVideo = (mainVideoTimerSec > -1)
 
+pulseRelay = True
+relayPulseTime = 0.2
+
 # Open and start the VL53L1X sensor.
 tof = VL53L1X.VL53L1X(i2c_bus=1, i2c_address=0x29)
 tof.open()
@@ -110,11 +113,19 @@ class Player(QtWidgets.QMainWindow):
 
     def setRelaisIntroVideo(self):
         relay1.on()
-        relay2.off()
+        if(pulseRelay):
+            time.sleep(relayPulseTime)
+            relay1.off()
+        else:
+            relay2.off()
         self.waiting = True
 
     def setRelaisMainVideo(self):
         relay2.on()
+        if(pulseRelay):
+            time.sleep(relayPulseTime)
+            relay2.off()
+        else:
         relay1.off()
         self.waiting = False
 
@@ -142,13 +153,13 @@ class Player(QtWidgets.QMainWindow):
 
         if(self.waiting):
             if(userPresent):
-                self.setRelaisMainVideo()
                 self.set_video(self.video)
+                self.setRelaisMainVideo()
         elif(not userPresent and breakMainVideo):
             timeWithoutUser = time.time() - self.lastTimeUserPresent
             if(timeWithoutUser > mainVideoTimerSec):
-                self.setRelaisIntroVideo()
                 self.set_video(self.waitVideo)
+                self.setRelaisIntroVideo()
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
