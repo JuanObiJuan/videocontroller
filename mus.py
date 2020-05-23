@@ -85,8 +85,8 @@ class Player(QtWidgets.QMainWindow):
         # create vlc instance + load videos
         self.instance = vlc.Instance()
         self.mediaplayer = self.instance.media_player_new()
-        self.waitVideo = self.instance.media_new(introVideo)
-        self.video = self.instance.media_new(mainVideo)
+        self.introVideo = self.instance.media_new(introVideo)
+        self.mainVideo = self.instance.media_new(mainVideo)
         self.mediaplayer.set_xwindow(int(self.videoframe.winId()))
         self.waiting = True
 
@@ -142,30 +142,30 @@ class Player(QtWidgets.QMainWindow):
 
         if(videoEnded):
             if(userPresent):
-                self.set_video(self.video)
+                self.set_video(self.mainVideo)
                 if(self.waiting):
                     self.setRelaisMainVideo()
             else:
-                self.set_video(self.waitVideo)
+                self.set_video(self.introVideo)
                 if(not self.waiting):
                     self.setRelaisIntroVideo()
             return
 
         if(self.waiting):
             if(userPresent):
-                self.set_video(self.video)
+                self.set_video(self.mainVideo)
                 self.setRelaisMainVideo()
         elif(not userPresent and breakMainVideo):
             timeWithoutUser = time.time() - self.lastTimeUserPresent
             if(timeWithoutUser > mainVideoTimerSec):
-                self.set_video(self.waitVideo)
+                self.set_video(self.introVideo)
                 self.setRelaisIntroVideo()
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
     player = Player()
     player.showFullScreen()
-    player.set_video(player.waitVideo)
+    player.set_video(player.introVideo)
     #player.show()
     #player.resize(800,600)
     app.exec_()
