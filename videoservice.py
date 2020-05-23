@@ -1,6 +1,8 @@
 import json
 import urllib.request
 import os
+import time
+
 #The json format
   #"version": 202005111739,
   #"updateConfigUrl": "https://mydomain/config.json",
