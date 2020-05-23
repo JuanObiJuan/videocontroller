@@ -21,11 +21,20 @@ with open(localConfigFile) as json_file:
     print("local config loaded")
 
 timeToWaitForWifi = 10
+wifiConnected = False
+os.system('notify-send "wifi" "waiting for wifi to connect"')
 for i in range(0, timeToWaitForWifi):
     wifistatus = open("/sys/class/net/wlan0/operstate")
-    time.sleep(1)
     if(wifistatus.read() == "up\n"):
+        wifiConnected = True
         break
+    time.sleep(1)
+
+if(wifiConnected):
+    os.system('notify-send "wifi" "wifi connected"')
+else:
+    os.system('notify-send "wifi" "no wifi connection"')
+
 
 # if the url can't be opened set "remoteConfig = localConfig"
 try:
