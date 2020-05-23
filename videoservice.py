@@ -17,6 +17,14 @@ localConfigFile = "/home/pi/Repository/videocontroller/config.json"
 with open(localConfigFile) as json_file:
     localConfig = json.load(json_file)
     print("local config loaded")
+
+timeToWaitForWifi = 10
+for i in range(0, timeToWaitForWifi):
+    wifistatus = open("/sys/class/net/wlan0/operstate")
+    time.sleep(1)
+    if(wifistatus.read() == "up\n"):
+        break
+
 # if the url can't be opened set "remoteConfig = localConfig"
 try:
     json_url_content= urllib.request.urlopen(localConfig["updateConfigUrl"])
@@ -39,7 +47,7 @@ if(remoteConfig["version"]>localConfig["version"]):
     os.system('notify-send "error" "Something went wrong updating the videos"')
   else:
     print("video update complete")
-    os.system('notify-send "ok" "Uupdate was successfull"')
+    os.system('notify-send "ok" "Update was successfull"')
     # overwrite old videos
     os.rename("/home/pi/introvideo_new.mp4","/home/pi/introvideo.mp4")
     os.rename("/home/pi/mainvideo_new.mp4","/home/pi/mainvideo.mp4")
