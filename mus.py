@@ -96,10 +96,22 @@ class Player(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.callback)
         self.timer.start()
 
+    # def set_video(self, video):
+    #     self.timer.stop()
+    #     self.mediaplayer.set_media(video)
+    #     self.mediaplayer.play()
+    #     self.timer.start()
+
+    # this is the set_video function to avoid the cutting of the beginning of the video
+    # if there are problems with this use the function above
+
     def set_video(self, video):
         self.timer.stop()
         self.mediaplayer.set_media(video)
         self.mediaplayer.play()
+        for i in range(15):
+            time.sleep(0.02)
+            self.mediaplayer.set_position(0.0)
         self.timer.start()
 
     def keyPressEvent(self,event):
