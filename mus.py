@@ -41,7 +41,7 @@ relayPulseTime = 0.2
 
 # Open and start the VL53L1X sensor.
 tof = VL53L1X.VL53L1X(i2c_bus=1, i2c_address=0x29)
-tof.open()
+tof.open(reset = True)
 tof.start_ranging(3)  # Start ranging
                       # 0 = Unchanged
                       # 1 = Short Range
