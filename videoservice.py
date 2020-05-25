@@ -24,12 +24,12 @@ with open(localConfigFile) as json_file:
 timeToWaitForWifi = 10
 time.sleep(timeToWaitForWifi)
 
-# wifiConnected = False
+wifiConnected = False
 # os.system('notify-send "wifi" "waiting for wifi to connect"')
 # for i in range(0, timeToWaitForWifi):
-#     wifistatus = open("/sys/class/net/wlan0/operstate")
-#     if(wifistatus.read() == "up\n"):
-#         wifiConnected = True
+wifistatus = open("/sys/class/net/wlan0/operstate")
+if(wifistatus.read() == "up\n"):
+    wifiConnected = True
 #         break
 #     time.sleep(1)
 
