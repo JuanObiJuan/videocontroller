@@ -20,15 +20,18 @@ with open(localConfigFile) as json_file:
     localConfig = json.load(json_file)
     print("local config loaded")
 
+# just wait for "timeToWaitForWifi" Seconds
 timeToWaitForWifi = 10
-wifiConnected = False
-os.system('notify-send "wifi" "waiting for wifi to connect"')
-for i in range(0, timeToWaitForWifi):
-    wifistatus = open("/sys/class/net/wlan0/operstate")
-    if(wifistatus.read() == "up\n"):
-        wifiConnected = True
-        break
-    time.sleep(1)
+time.sleep(timeToWaitForWifi)
+
+# wifiConnected = False
+# os.system('notify-send "wifi" "waiting for wifi to connect"')
+# for i in range(0, timeToWaitForWifi):
+#     wifistatus = open("/sys/class/net/wlan0/operstate")
+#     if(wifistatus.read() == "up\n"):
+#         wifiConnected = True
+#         break
+#     time.sleep(1)
 
 if(wifiConnected):
     os.system('notify-send "wifi" "wifi connected"')
