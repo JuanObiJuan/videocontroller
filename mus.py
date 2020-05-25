@@ -49,8 +49,15 @@ tof.start_ranging(3)  # Start ranging
                       # 3 = Long Range
 
 #Now we have two channels to communicate with the lights
+#This library is made for LEDS this means that led.on() is turning the gpio to 1 (3.3 Volts on)
+#In our case Relais are active when the gpio is output is 0 led.off()
+#To avoid to send both messages to the light system at the beggining
+#We are going to use the output called "normally open" or "NO" and send a negative pulse to activate the signal
+#In this way We avoid to send messages to the light system when the raspbery pi is booting or initialized
 relay1=LED(27)
 relay2=LED(17)
+relay1.on()
+relay2.on()
 
 def exit_handler(signal, frame):
     global running
@@ -124,21 +131,21 @@ class Player(QtWidgets.QMainWindow):
     # make a pulse (temporally on)
 
     def setRelaisIntroVideo(self):
-        relay1.on()
+        relay1.off()
         if(pulseRelay):
             time.sleep(relayPulseTime)
-            relay1.off()
+            relay1.on()
         else:
-            relay2.off()
+            relay2.on()
         self.waiting = True
 
     def setRelaisMainVideo(self):
-        relay2.on()
+        relay2.off()
         if(pulseRelay):
             time.sleep(relayPulseTime)
-            relay2.off()
+            relay2.on()
         else:
-            relay1.off()
+            relay1.on()
         self.waiting = False
 
         #TODO: would be much more elegant with two different callback functions for the waiting states
@@ -177,6 +184,7 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     player = Player()
     player.showFullScreen()
+    player.setRelaisIntroVideo()
     player.set_video(player.introVideo)
     #player.show()
     #player.resize(800,600)
