@@ -2,6 +2,7 @@ import json
 import urllib.request
 import os
 import time
+import git
 
 #The json format
   #"version": 202005111739,
@@ -34,6 +35,8 @@ if(wifistatus.read() == "up\n"):
 #     time.sleep(1)
 
 if(wifiConnected):
+    repo = git.Repo('/home/pi/Repository/videocontroller')
+    repo.remotes.origin.pull()
     os.system('notify-send "wifi" "wifi connected"')
 else:
     os.system('notify-send "wifi" "no wifi connection"')
