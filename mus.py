@@ -37,7 +37,7 @@ mainVideo = "/home/pi/mainvideo.mp4"
 breakMainVideo = (mainVideoTimerSec > -1)
 
 pulseRelay = True
-relayPulseTime = 0.2
+relayPulseTime = 0.3
 
 # Open and start the VL53L1X sensor.
 tof = VL53L1X.VL53L1X(i2c_bus=1, i2c_address=0x29)
@@ -129,23 +129,28 @@ class Player(QtWidgets.QMainWindow):
     # maybe this change in the future
     # and instead on/off we have to temporally
     # make a pulse (temporally on)
+    def relaisInitialization(self):
+        relay1.off()
+        time.sleep(relayPulseTime)
+        relay1.on()
+
 
     def setRelaisIntroVideo(self):
         relay1.off()
-        if(pulseRelay):
-            time.sleep(relayPulseTime)
-            relay1.on()
-        else:
-            relay2.on()
+        time.sleep(relayPulseTime)
+        relay1.on()
+        relay2.off()
+        time.sleep(relayPulseTime)
+        relay2.on()
         self.waiting = True
 
     def setRelaisMainVideo(self):
+        relay1.off()
+        time.sleep(relayPulseTime)
+        relay1.on()
         relay2.off()
-        if(pulseRelay):
-            time.sleep(relayPulseTime)
-            relay2.on()
-        else:
-            relay1.on()
+        time.sleep(relayPulseTime)
+        relay2.on()
         self.waiting = False
 
         #TODO: would be much more elegant with two different callback functions for the waiting states
@@ -184,7 +189,7 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     player = Player()
     player.showFullScreen()
-    player.setRelaisIntroVideo()
+    player.relaisInitialization()
     player.set_video(player.introVideo)
     #player.show()
     #player.resize(800,600)
