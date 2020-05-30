@@ -140,18 +140,18 @@ class Player(QtWidgets.QMainWindow):
 
     def setRelaisIntroVideo(self):
         self.waiting = True
-        relay2.off()
+        relay1.off()
         time.sleep(relayPulseTime)
-        relay2.on()
+        relay1.on()
         #relay2.off()
         #time.sleep(relayPulseTime)
         #relay2.on()
 
     def setRelaisMainVideo(self):
         self.waiting = False
-        relay2.off()
+        relay1.off()
         time.sleep(relayPulseTime)
-        relay2.on()
+        relay1.on()
         #relay2.off()
         #time.sleep(relayPulseTime)
         #relay2.on()
