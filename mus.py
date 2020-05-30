@@ -130,28 +130,30 @@ class Player(QtWidgets.QMainWindow):
     # and instead on/off we have to temporally
     # make a pulse (temporally on)
     def relaisInitialization(self):
+        self.waiting = True
         relay1.off()
         time.sleep(relayPulseTime)
         relay1.on()
 
 
     def setRelaisIntroVideo(self):
+        self.waiting = True
         relay1.off()
         time.sleep(relayPulseTime)
         relay1.on()
         relay2.off()
         time.sleep(relayPulseTime)
         relay2.on()
-        self.waiting = True
 
     def setRelaisMainVideo(self):
+        self.waiting = False
         relay1.off()
         time.sleep(relayPulseTime)
         relay1.on()
         relay2.off()
         time.sleep(relayPulseTime)
         relay2.on()
-        self.waiting = False
+
 
         #TODO: would be much more elegant with two different callback functions for the waiting states
     def callback(self):
