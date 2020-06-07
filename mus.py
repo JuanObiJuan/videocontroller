@@ -7,8 +7,14 @@ import json
 from PyQt5 import QtWidgets, QtGui, QtCore
 import vlc
 from gpiozero import LED
-import VL53L1X
+
 import json
+
+import RPi.GPIO as GPIO
+
+GPIO.setmode(GPIO.BCM)
+GPIO_SENSOR = 23
+GPIO.setup(GPIO_SENSOR, GPIO.IN)
 
 #The json format
   #"version": 202005111739,
@@ -39,14 +45,7 @@ breakMainVideo = (mainVideoTimerSec > -1)
 pulseRelay = True
 relayPulseTime = 0.3
 
-# Open and start the VL53L1X sensor.
-tof = VL53L1X.VL53L1X(i2c_bus=1, i2c_address=0x29)
-tof.open(reset = True)
-tof.start_ranging(3)  # Start ranging
-                      # 0 = Unchanged
-                      # 1 = Short Range
-                      # 2 = Medium Range
-                      # 3 = Long Range
+
 
 #Now we have two channels to communicate with the lights
 #This library is made for LEDS this means that led.on() is turning the gpio to 1 (3.3 Volts on)
@@ -54,15 +53,36 @@ tof.start_ranging(3)  # Start ranging
 #To avoid to send both messages to the light system at the beggining
 #We are going to use the output called "normally open" or "NO" and send a negative pulse to activate the signal
 #In this way We avoid to send messages to the light system when the raspbery pi is booting or initialized
-relay1=LED(27)
-relay2=LED(17)
+relay1=LED(22)
+relay2=LED(27)
 relay1.on()
 relay2.on()
+
+def distance():
+    StartTime = time.time()
+    StopTime = time.time()
+    # save time of arrival
+    while GPIO.input(GPIO_SENSOR) == 1:
+        print("wait")
+    while GPIO.input(GPIO_SENSOR) == 0:
+        StartTime = time.time()
+ 
+    # save time of arrival
+    while GPIO.input(GPIO_SENSOR) == 1:
+        StopTime = time.time()
+ 
+    # time difference between start and arrival
+    TimeElapsed = StopTime - StartTime
+    # multiply with the sonic speed (34300 cm/s)
+    # and divide by 2, because there and back
+    distance = (TimeElapsed*10000*17)
+    print(distance)
+    return distance
 
 def exit_handler(signal, frame):
     global running
     running = False
-    tof.stop_ranging()
+    GPIO.cleanup()
     QtWidgets.QApplication.quit()
 
 # Attach a signal handler to catch SIGINT (Ctrl+C) and exit gracefully
@@ -129,38 +149,40 @@ class Player(QtWidgets.QMainWindow):
     # maybe this change in the future
     # and instead on/off we have to temporally
     # make a pulse (temporally on)
-    def relaisInitialization(self):
-        self.waiting = True
+    def setInitialSceneStatus(self):
+        #scene on on both casambi scenes
         relay1.off()
-        time.sleep(relayPulseTime)
-        relay1.on()
         relay2.off()
         time.sleep(relayPulseTime)
+        relay1.on()
         relay2.on()
+        #wait a reasonable time
+        #and switch on scene 1
+        time.sleep(relayPulseTime*8)
+        relay1.off()
+        time.sleep(relayPulseTime)
+        relay1.on()
+        self.waiting = True
 
     def setRelaisIntroVideo(self):
-        self.waiting = True
+        #scene 1 on
         relay1.off()
         time.sleep(relayPulseTime)
         relay1.on()
-        #relay2.off()
-        #time.sleep(relayPulseTime)
-        #relay2.on()
+        self.waiting = True
 
     def setRelaisMainVideo(self):
-        self.waiting = False
+        #scene 1 off
         relay1.off()
         time.sleep(relayPulseTime)
         relay1.on()
-        #relay2.off()
-        #time.sleep(relayPulseTime)
-        #relay2.on()
+        self.waiting = False
 
 
         #TODO: would be much more elegant with two different callback functions for the waiting states
     def callback(self):
         videoEnded = (self.mediaplayer.get_state() == 6)
-        distance_in_mm = tof.get_distance()
+        distance_in_mm = distance()
         userPresent = (distance_in_mm < startingDistance and distance_in_mm > minDistance)
         #TODO: this way a distance smaller than startingDistance is treated like no user is Present, this might not be a problem though.
         #      but it feels like it would be more logical if it's handled as the state of last call.
@@ -195,10 +217,7 @@ def main():
     player.showFullScreen()
     player.relaisInitialization()
     player.set_video(player.introVideo)
-    #player.show()
-    #player.resize(800,600)
     app.exec_()
-    tof.stop_ranging()
     sys.exit(0)
 
 if __name__ == "__main__":
