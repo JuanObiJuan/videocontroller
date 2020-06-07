@@ -215,7 +215,7 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     player = Player()
     player.showFullScreen()
-    player.relaisInitialization()
+    player.setInitialSceneStatus()
     player.set_video(player.introVideo)
     app.exec_()
     sys.exit(0)
