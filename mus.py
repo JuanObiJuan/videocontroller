@@ -61,7 +61,7 @@ relay2.on()
 def distance():
     StartTime = time.time()
     StopTime = time.time()
-    # save time of arrival
+    # just in case is already 1 we just wait for 0 to start counting
     while GPIO.input(GPIO_SENSOR) == 1:
         print("wait")
     while GPIO.input(GPIO_SENSOR) == 0:
@@ -143,7 +143,7 @@ class Player(QtWidgets.QMainWindow):
 
     def keyPressEvent(self,event):
         if(event.key() == QtCore.Qt.Key_Escape):
-            tof.stop_ranging()
+            #tof.stop_ranging()
             self.close()
 
     # maybe this change in the future
