@@ -158,10 +158,10 @@ class Player(QtWidgets.QMainWindow):
         relay2.on()
         #wait a reasonable time
         #and switch on scene 1
-        time.sleep(relayPulseTime*8)
-        relay1.off()
-        time.sleep(relayPulseTime)
-        relay1.on()
+        #time.sleep(relayPulseTime*8)
+        #relay1.off()
+        #time.sleep(relayPulseTime)
+        #relay1.on()
         self.waiting = True
 
     def setRelaisIntroVideo(self):
