@@ -152,10 +152,10 @@ class Player(QtWidgets.QMainWindow):
     def setInitialSceneStatus(self):
         #scene on on both casambi scenes
         relay1.off()
-        relay2.off()
+        #relay2.off()
         time.sleep(relayPulseTime)
         relay1.on()
-        relay2.on()
+        #relay2.on()
         #wait a reasonable time
         #and switch on scene 1
         #time.sleep(relayPulseTime*8)
